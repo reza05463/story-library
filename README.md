@@ -1,5 +1,7 @@
 # Story Library — PHP and MySQL
 
+[**English**](README.md) · [**فارسی ←**](README.fa.md)
+
 A Persian-language university application by **Reza Ranjbar** for categorized stories, accounts, author editing, and administrator moderation. This revised educational edition repairs the original source and preserves its database relationships.
 
 ## Local setup
