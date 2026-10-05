@@ -1,20 +1,33 @@
-# Story Library — PHP and MySQL
+[**فارسی**](README.md) | [English](README.en.md)
 
-[**English**](README.md) · [**فارسی ←**](README.fa.md)
+<div dir="rtl">
 
-A Persian-language university application by **Reza Ranjbar** for categorized stories, accounts, author editing, and administrator moderation. This revised educational edition repairs the original source and preserves its database relationships.
+# کتابخانه داستان — PHP و MySQL
 
-## Local setup
+این کتابخانه داستان فارسی را به‌عنوان پروژه دانشگاهی با PHP و MySQL ساختم. کاربران می‌توانند حساب بسازند، داستان منتشر کنند و دسته‌بندی‌ها را ببینند؛ مدیر هم امکان نظارت بر محتوا را دارد. این نسخه شامل اصلاحات کد اولیه است و روابط پایگاه داده در آن حفظ شده‌اند.
 
-Requires PHP 8.1+ with `pdo_mysql`, `mbstring`, and `gd`, plus MySQL. See [verification](VERIFICATION.md) for the tested versions and results.
+## راه‌اندازی محلی
 
-1. Create a **new empty** database named `library` using `utf8mb4`. Import `database/schema.sql` into it. This is not an upgrade script for an existing database.
-2. Create an application database user with SELECT, INSERT, UPDATE and DELETE access to this database. Keep its password outside source control.
-3. Set `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASS` in the environment of the PHP process. Host, port and database default to `127.0.0.1`, `3306`, and `library`; `DB_USER` must be set.
-4. From this repository folder, run `php -S 127.0.0.1:8080 -t public` and open `http://127.0.0.1:8080`.
-5. Register an account using a password of 12–72 bytes. New users always receive role 0. To make a local administrator, use your database tool to set **only your verified account's** `users.role` to 1. There is no public role-upgrade endpoint.
+پیش‌نیازها: **PHP نسخه 8.1 یا بالاتر** با افزونه‌های `pdo_mysql`، `mbstring` و `gd`، به همراه **MySQL**. نسخه‌های آزمایش‌شده و نتایج در [گزارش بررسی](VERIFICATION.md) آمده‌اند.
 
-For PowerShell, after creating the database and its application user, set the actual values in the same terminal:
+1. یک پایگاه داده **جدید و خالی** به نام `library` با مجموعه‌نویسه `utf8mb4` بسازید و فایل `database/schema.sql` را در آن وارد کنید. این فایل، اسکریپت ارتقای پایگاه داده موجود نیست.
+2. یک کاربر پایگاه داده مخصوص برنامه با دسترسی‌های SELECT، INSERT، UPDATE و DELETE روی همین پایگاه داده ایجاد کنید. رمز آن را در مخزن کد قرار ندهید.
+3. متغیرهای محیطی `DB_HOST`، `DB_PORT`، `DB_NAME`، `DB_USER` و `DB_PASS` را برای فرایند PHP تنظیم کنید. مقادیر پیش‌فرض میزبان، پورت و نام پایگاه داده به‌ترتیب `127.0.0.1`، `3306` و `library` هستند. تنظیم `DB_USER` الزامی است.
+4. از پوشه اصلی پروژه، دستور زیر را اجرا کنید و آدرس `http://127.0.0.1:8080` را در مرورگر باز کنید.
+
+</div>
+
+```text
+php -S 127.0.0.1:8080 -t public
+```
+
+<div dir="rtl">
+
+5. یک حساب با رمز عبور ۱۲ تا ۷۲ بایت ثبت کنید. نقش کاربران جدید همیشه صفر است. برای ایجاد مدیر در محیط محلی، با ابزار مدیریت پایگاه داده مقدار `users.role` را **فقط برای حساب خودتان که هویت آن را بررسی کرده‌اید** به ۱ تغییر دهید. برنامه مسیر عمومی برای ارتقای نقش کاربر ندارد.
+
+در PowerShell، پس از ایجاد پایگاه داده و کاربر مخصوص برنامه، مقادیر واقعی را در همان ترمینال تنظیم کنید:
+
+</div>
 
 ```powershell
 $env:DB_HOST = '127.0.0.1'
@@ -26,16 +39,24 @@ $env:DB_PASS = [System.Net.NetworkCredential]::new('', $securePassword).Password
 php -S 127.0.0.1:8080 -t public
 ```
 
-PHP reads process environment variables; it does not automatically load `.env`. Serve **only `public/`**. Do not use a root database account for the application.
+<div dir="rtl">
 
-## Features
+PHP متغیرهای محیطی فرایند را می‌خواند؛ فایل `.env` به‌صورت خودکار بارگذاری نمی‌شود. ریشه وب‌سرور باید **فقط پوشه `public/`** باشد. برای اجرای برنامه از حساب root پایگاه داده استفاده نکنید.
 
-- Published-story reading and category browsing.
-- Password-hashed registration/login with the original image CAPTCHA workflow.
-- Author creation, editing, deletion, and profile updates.
-- Administrator story moderation and regular-user removal.
+## امکانات
 
-Profile updates require the current password. Cover images must already exist in `public/assets/uploads`; no HTTP file-upload handler is provided.
+- خواندن داستان‌های منتشرشده و مرور دسته‌بندی‌ها.
+- ثبت‌نام و ورود با هش‌کردن رمز عبور و کپچای تصویری.
+- ایجاد، ویرایش و حذف داستان توسط نویسنده و به‌روزرسانی اطلاعات حساب.
+- نظارت مدیر بر داستان‌ها و حذف کاربران عادی.
+
+تغییر اطلاعات حساب به رمز عبور فعلی نیاز دارد. تصاویر جلد باید از قبل در `public/assets/uploads` قرار داشته باشند؛ برنامه بخش بارگذاری فایل از طریق HTTP ندارد.
+
+## روابط پایگاه داده
+
+هر کاربر می‌تواند چند داستان داشته باشد و هر داستان می‌تواند به یک دسته‌بندی تعلق داشته باشد. دسته‌بندی برای داستان اختیاری است.
+
+</div>
 
 ```mermaid
 erDiagram
@@ -43,26 +64,38 @@ erDiagram
     CATEGORIES o|--o{ STORIES : groups
 ```
 
-Deleting a user cascades their stories; deleting a category leaves its stories uncategorized. Deletion is permanent in this local demonstration.
+<div dir="rtl">
 
-## Changes from the submission
+حذف کاربر، داستان‌های او را نیز حذف می‌کند. حذف دسته‌بندی، داستان‌های آن را بدون دسته‌بندی باقی می‌گذارد. در این نسخه محلی، حذف دائمی است.
 
-The malformed escaping helper was repaired. Output is escaped, destructive actions use CSRF-protected POST forms, session IDs regenerate on authentication, roles refresh from the database, and record IDs/profile/story fields/cover names are validated. Database configuration comes from the environment. Missing CSS references, malformed date formats, and invalid CSS properties were corrected. The original Persian interface is retained.
+## اصلاحات نسبت به نسخه اولیه
 
-## Verification
+تابع ناقص ایمن‌سازی خروجی اصلاح شده است. متن‌های خروجی برای جلوگیری از تفسیر ناخواسته به‌عنوان HTML، escape می‌شوند. عملیات حذف و تغییر وضعیت از فرم‌های POST با محافظت CSRF استفاده می‌کنند. شناسه نشست هنگام احراز هویت بازتولید می‌شود و نقش کاربر از پایگاه داده به‌روزرسانی می‌شود.
 
-To run the automated integration checks with installed PHP/MySQL binaries:
+شناسه رکوردها، فیلدهای حساب و داستان و نام فایل جلد اعتبارسنجی می‌شوند. تنظیمات اتصال پایگاه داده از محیط خوانده می‌شوند. ارجاع به فایل CSS ناموجود، قالب‌های تاریخ نادرست و ویژگی‌های نامعتبر CSS نیز اصلاح شده‌اند. رابط فارسی اولیه حفظ شده است.
+
+## بررسی و آزمون
+
+برای اجرای آزمون‌های یکپارچه‌سازی، با استفاده از نسخه‌های نصب‌شده PHP و MySQL، دستور زیر را اجرا کنید. عبارت‌های جایگزین را با مسیر فایل اجرایی PHP و پوشه فایل‌های اجرایی MySQL عوض کنید:
+
+</div>
 
 ```text
 python tests/integration.py --php PATH_TO_PHP --mysql-bin PATH_TO_MYSQL_BIN_DIRECTORY
 ```
 
-The test runner creates a **separate temporary MySQL instance** on loopback and new ports. It never connects to your normal database. It stops both servers and prints the retained test directory for inspection. Root without a password is used only inside that isolated fixture, not as the application's documented configuration.
+<div dir="rtl">
 
-## Limits and attribution
+آزمون‌گر یک **نمونه موقت و جداگانه MySQL** روی آدرس محلی و پورت‌های جدید ایجاد می‌کند و به پایگاه داده معمول شما متصل نمی‌شود. در پایان، هر دو سرور را متوقف می‌کند و مسیر پوشه آزمون را برای بررسی نمایش می‌دهد. استفاده از root بدون رمز فقط به همین محیط آزمون جداگانه محدود است و تنظیم پیشنهادی برنامه نیست.
 
-This is a local coursework demonstration. Before Internet deployment it needs robust rate limiting, account recovery, email verification, pagination, an accessible CAPTCHA alternative, and a deployment-specific security review. No complete-security claim is made.
+نتایج اجرای واقعی و محدوده بررسی‌ها در [گزارش بررسی](VERIFICATION.md) ثبت شده‌اند.
 
-GitHub hosts the source. GitHub Pages cannot run this PHP/MySQL backend; link to this repository from the static portfolio.
+## محدوده پروژه
 
-Original coursework: Reza Ranjbar. Cleanup, checks and documentation were prepared with AI assistance. No user records, passwords, or original cover artwork are included.
+این پروژه یک نمونه آموزشی برای اجرای محلی است. پیش از انتشار عمومی روی اینترنت، به محدودسازی مناسب نرخ درخواست، بازیابی حساب، تأیید ایمیل، صفحه‌بندی، جایگزین دسترس‌پذیر برای کپچا و بررسی امنیتی متناسب با محیط استقرار نیاز دارد. این نسخه برای یادگیری و نمایش در محیط محلی در نظر گرفته شده است.
+
+GitHub میزبان کد منبع است. GitHub Pages نمی‌تواند بخش PHP و MySQL این برنامه را اجرا کند؛ در وب‌سایت نمونه‌کارها به همین مخزن پیوند بدهید.
+
+اطلاعات کاربران، رمزهای عبور و تصاویر جلد نسخه اولیه را در مخزن قرار نداده‌ام تا راه‌اندازی پروژه با یک پایگاه داده خالی انجام شود.
+
+</div>
